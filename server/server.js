@@ -11,10 +11,6 @@ const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 
-app.use((req, res, next) => {
-	console.log(`${new Date().toString()}: ${req.method} ${req.url}`);
-	next();
-});
 
 app.post('/todos', (req, res) => {
 	var todo = new Todo({
@@ -50,7 +46,6 @@ app.get('/todos/:id', (req, res) => {
 });
 
 app.delete('/todos/:id', (req, res) => {
-	console.log(req);
 	var id = req.params.id;
 	if(!ObjectID.isValid(id)) {
 		return res.status(404).send();
