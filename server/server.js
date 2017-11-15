@@ -3,6 +3,7 @@ const _ = require('lodash');
 const express = require('express');
 const bodyParser = require('body-parser');
 const {ObjectID} = require('mongodb');
+const cors = require('cors')
 
 var {mongoose} = require('./db/mongoose.js');
 var {Todo} = require('./models/todo');
@@ -19,9 +20,19 @@ app.use((req, res, next) => {
 	next();
 });
 
+var whitelist = ['http://localhost:4200', 'http://ec2-54-245-189-189.us-west-2.compute.amazonaws.com'];
+var corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  }
+}
+app.use(cors(corsOptions));
+
 app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "http://localhost:4200");
-  res.header("Access-Control-Allow-Origin", "http://ec2-54-245-189-189.us-west-2.compute.amazonaws.com");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, x-auth");
   res.header("Access-Control-Expose-Headers", "x-auth");
   res.header("Access-Control-Allow-Methods", "DELETE, PATCH");
