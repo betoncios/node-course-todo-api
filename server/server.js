@@ -14,6 +14,18 @@ const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 
+app.use((req, res, next) => {
+	console.log(`${new Date().toString()}: ${req.method} ${req.url}`);
+	next();
+});
+
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "http://localhost:4200, http://0.0.0.0:4200");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, x-auth");
+  res.header("Access-Control-Expose-Headers", "x-auth");
+  res.header("Access-Control-Allow-Methods", "DELETE, PATCH");
+  next();
+});
 
 app.post('/todos', authenticate, (req, res) => {
 	var todo = new Todo({
